@@ -5,6 +5,7 @@ require "pre.php";
 
 if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
     header("location: login.php");
+    exit();
 }
 ?>
 
@@ -25,10 +26,18 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
     <link rel="stylesheet" href="dist/css/adminlte.min.css">
     <!-- Google Font: Source Sans Pro -->
     <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700" rel="stylesheet">
+    <style>
+        .blog-img {
+            width: 100%;
+            height: 250px;
+            object-fit: contain;
+        }
+    </style>
 </head>
 
 <body class="hold-transition sidebar-mini">
     <div class="container-fluid">
+        <a href="logout.php" class="btn btn-primary float-right">logout</a>
         <!-- Content Wrapper. Contains page content -->
         <div class="">
             <!-- Content Header (Page header) -->
@@ -38,205 +47,52 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
                 </div><!-- /.container-fluid -->
             </section>
 
+            <?php
+            $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            ?>
+
             <!-- Main content -->
             <section class="content">
 
                 <div class="row">
-                    <div class="col-md-4">
-                        <!-- Box Comment -->
-                        <div class="card card-widget">
-                            <div class="card-header">
-                                <div class="card-title text-center" style="float: none;">
-                                    <h4>Blog Title</h4>
+                    <?php
+                    if ($result) {
+                        //  $i=1;
+                        foreach ($result as $value) {
+                            $i = 1;
+                    ?>
+                            <div class="col-md-4">
+                                <!-- Box Comment -->
+                                <div class="card card-widget">
+                                    <div class="card-header">
+                                        <div class="card-title text-center" style="float: none;">
+                                            <h4><?php echo $value["title"]; ?></h4>
+                                        </div>
+
+                                    </div>
+                                    <!-- /.card-header -->
+                                    <div class="card-body">
+
+                                        <a href="blogdetail.php?id=<?php echo $value['id']  ?>">
+                                            <img class="img-fluid pad blog-img" src='./admin/images/<?php echo $value['image']; ?>' alt="photo">
+                                        </a>
+                                        <p><?php echo substr($value['content'], 0, 50) ?></p>
+
+                                    </div>
+                                    <!-- /.card-body -->
+
                                 </div>
-
+                                <!-- /.card -->
                             </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <p>I took this photo this morning. What do you guys think?</p>
+                            <!-- /.col -->
+                    <?php
+                            $i++;
+                        }
+                    }
+                    ?>
 
-                            </div>
-                            <!-- /.card-body -->
-
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                    <div class="col-md-4">
-                        <!-- Box Comment -->
-                        <div class="card card-widget">
-                            <div class="card-header">
-                                <div class="card-title text-center" style="float: none;">
-                                    <h4>Blog Title</h4>
-                                </div>
-
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <p>I took this photo this morning. What do you guys think?</p>
-
-                            </div>
-                            <!-- /.card-body -->
-
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                    <div class="col-md-4">
-                        <!-- Box Comment -->
-                        <div class="card card-widget">
-                            <div class="card-header">
-                                <div class="card-title text-center" style="float: none;">
-                                    <h4>Blog Title</h4>
-                                </div>
-
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <p>I took this photo this morning. What do you guys think?</p>
-
-                            </div>
-                            <!-- /.card-body -->
-
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-                <div class="row">
-                    <div class="col-md-4">
-                        <!-- Box Comment -->
-                        <div class="card card-widget">
-                            <div class="card-header">
-                                <div class="card-title text-center" style="float: none;">
-                                    <h4>Blog Title</h4>
-                                </div>
-
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <p>I took this photo this morning. What do you guys think?</p>
-
-                            </div>
-                            <!-- /.card-body -->
-
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                    <div class="col-md-4">
-                        <!-- Box Comment -->
-                        <div class="card card-widget">
-                            <div class="card-header">
-                                <div class="card-title text-center" style="float: none;">
-                                    <h4>Blog Title</h4>
-                                </div>
-
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <p>I took this photo this morning. What do you guys think?</p>
-
-                            </div>
-                            <!-- /.card-body -->
-
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                    <div class="col-md-4">
-                        <!-- Box Comment -->
-                        <div class="card card-widget">
-                            <div class="card-header">
-                                <div class="card-title text-center" style="float: none;">
-                                    <h4>Blog Title</h4>
-                                </div>
-
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <p>I took this photo this morning. What do you guys think?</p>
-
-                            </div>
-                            <!-- /.card-body -->
-
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                </div>
-                <!-- /.row -->
-                <div class="row">
-                    <div class="col-md-4">
-                        <!-- Box Comment -->
-                        <div class="card card-widget">
-                            <div class="card-header">
-                                <div class="card-title text-center" style="float: none;">
-                                    <h4>Blog Title</h4>
-                                </div>
-
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <p>I took this photo this morning. What do you guys think?</p>
-
-                            </div>
-                            <!-- /.card-body -->
-
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                    <div class="col-md-4">
-                        <!-- Box Comment -->
-                        <div class="card card-widget">
-                            <div class="card-header">
-                                <div class="card-title text-center" style="float: none;">
-                                    <h4>Blog Title</h4>
-                                </div>
-
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <p>I took this photo this morning. What do you guys think?</p>
-
-                            </div>
-                            <!-- /.card-body -->
-
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
-                    <div class="col-md-4">
-                        <!-- Box Comment -->
-                        <div class="card card-widget">
-                            <div class="card-header">
-                                <div class="card-title text-center" style="float: none;">
-                                    <h4>Blog Title</h4>
-                                </div>
-
-                            </div>
-                            <!-- /.card-header -->
-                            <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
-                                <p>I took this photo this morning. What do you guys think?</p>
-
-                            </div>
-                            <!-- /.card-body -->
-
-                        </div>
-                        <!-- /.card -->
-                    </div>
-                    <!-- /.col -->
                 </div>
                 <!-- /.row -->
             </section>
@@ -248,12 +104,14 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
         </div>
         <!-- /.content-wrapper -->
 
-        <footer class="main-footer m-0">
-            <div class="float-right d-none d-sm-block">
-                <b>Version</b> 3.0.5
+        <!-- Main Footer -->
+        <footer class="main-footer ml-0">
+            <!-- To the right -->
+            <div class="float-right d-none d-sm-inline ">
+                <a href="logout.php" type="button" class="btn btn-default">Logout</a>
             </div>
-            <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
-            reserved.
+            <!-- Default to the left -->
+            <strong>Copyright &copy; 2022 <a href="#">WinMinAung </a>.</strong> All rights reserved.
         </footer>
 
         <!-- Control Sidebar -->

@@ -6,6 +6,48 @@ require "pre.php";
 if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
     header("location: login.php");
 }
+
+
+
+
+if (!empty($_GET['id'])) {
+    $blogId = $_GET['id'];
+    $stmt = $pdo->prepare("SELECT * FROM posts WHERE id=$blogId");
+    $stmt->execute();
+    $result = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    $stmtcmt = $pdo->prepare("SELECT * FROM comments WHERE post_id=$blogId");
+    $stmtcmt->execute();
+    $cmResult = $stmtcmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // if (!empty($cmResult)) {
+    //     pre($cmResult);
+    //     exit();
+    //     // $authorId = $cmResult[0]['author_id'];
+    //     // $stmtau = $pdo->prepare("SELECT * FROM users WHERE id=$authorId");
+    //     // $stmtau->execute();
+    //     // $auResult = $stmtau->fetch(PDO::FETCH_ASSOC);
+    // }
+
+
+    if (!empty($_POST)) {
+        $comment = $_POST['comment'];
+
+
+
+        $stmt = $pdo->prepare("INSERT INTO comments (content,author_id,post_id) VALUES (:content,:author_id,:post_id)");
+
+        $result = $stmt->execute(
+            array(
+                ':content' => $comment, ':author_id' => $_SESSION['user_id'], ':post_id' => $blogId
+            )
+        );
+
+        if ($result) {
+            header('Location: blogdetail.php?id=' . $blogId);
+        }
+    }
+}
 ?>
 
 <!DOCTYPE html>
@@ -34,7 +76,7 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
             <!-- Content Header (Page header) -->
             <section class="content-header text-center">
                 <div class="container-fluid">
-                    <h1>Blog site</h1>
+                    <h1><?php echo $result['title'] ?></h1>
                 </div><!-- /.container-fluid -->
             </section>
 
@@ -47,53 +89,53 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
                         <div class="card card-widget">
 
                             <div class="card-body">
-                                <img class="img-fluid pad" src="dist/img/photo2.png" alt="Photo">
+                                <img class="img-fluid pad" src="admin/images/<?php echo $result['image'] ?>" alt="Photo">
+                                <br><br>
+                                <p><?php echo $result['content'] ?></p>
 
-                                <p>I took this photo this morning. What do you guys think?</p>
-                                <button type="button" class="btn btn-default btn-sm"><i class="fas fa-share"></i> Share</button>
-                                <button type="button" class="btn btn-default btn-sm"><i class="far fa-thumbs-up"></i> Like</button>
-                                <span class="float-right text-muted">127 likes - 3 comments</span>
                             </div>
                             <!-- /.card-body -->
-                            <div class="card-footer card-comments">
-                                <div class="card-comment">
-                                    <!-- User image -->
-                                    <img class="img-circle img-sm" src="dist/img/user3-128x128.jpg" alt="User Image">
+                            <h1>Comment</h1>
+                            <a href="./" class="btn btn-default" type="button"><b>Go Back</b></a>
+                            <hr>
+                            <?php
+                            if ($cmResult) {
 
-                                    <div class="comment-text">
-                                        <span class="username">
-                                            Maria Gonzales
-                                            <span class="text-muted float-right">8:03 PM Today</span>
-                                        </span><!-- /.username -->
-                                        It is a long established fact that a reader will distracted
-                                        by the readable content of a page when looking at its layout.
-                                    </div>
-                                    <!-- /.comment-text -->
-                                </div>
-                                <!-- /.card-comment -->
-                                <div class="card-comment">
-                                    <!-- User image -->
-                                    <img class="img-circle img-sm" src="dist/img/user4-128x128.jpg" alt="User Image">
+                                foreach ($cmResult as $value) {
 
-                                    <div class="comment-text">
-                                        <span class="username">
-                                            Luna Stark
-                                            <span class="text-muted float-right">8:03 PM Today</span>
-                                        </span><!-- /.username -->
-                                        It is a long established fact that a reader will distracted
-                                        by the readable content of a page when looking at its layout.
+                                    $authorId = $value['author_id'];
+                                    $stmtau = $pdo->prepare("SELECT * FROM users WHERE id=$authorId");
+                                    $stmtau->execute();
+                                    $auResult = $stmtau->fetch(PDO::FETCH_ASSOC);
+
+                            ?>
+                                    <div class="card-footer card-comments">
+                                        <div class="card-comment">
+
+                                            <div class="comment-text" style="margin-left:0px;">
+                                                <span class="username">
+                                                    <?php echo $auResult['name']; ?>
+                                                    <span class="text-muted float-right">
+                                                        <?php echo $value['created_at']; ?>
+                                                    </span>
+                                                </span><!-- /.username -->
+                                                <?php echo $value['content']; ?>
+                                            </div>
+                                            <!-- /.comment-text -->
+                                        </div>
+                                        <!-- /.card-comment -->
                                     </div>
-                                    <!-- /.comment-text -->
-                                </div>
-                                <!-- /.card-comment -->
-                            </div>
+                            <?php
+                                }
+                            }
+                            ?>
                             <!-- /.card-footer -->
                             <div class="card-footer">
-                                <form action="#" method="post">
-                                    <img class="img-fluid img-circle img-sm" src="dist/img/user4-128x128.jpg" alt="Alt Text">
+                                <form action="" method="post">
+
                                     <!-- .img-push is used to add margin to elements next to floating images -->
                                     <div class="img-push">
-                                        <input type="text" class="form-control form-control-sm" placeholder="Press enter to post comment">
+                                        <input type="text" name="comment" class="form-control form-control-sm" placeholder="Press enter to post comment">
                                     </div>
                                 </form>
                             </div>
@@ -113,12 +155,14 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
         </div>
         <!-- /.content-wrapper -->
 
-        <footer class="main-footer m-0">
-            <div class="float-right d-none d-sm-block">
-                <b>Version</b> 3.0.5
+        <!-- Main Footer -->
+        <footer class="main-footer ml-0">
+            <!-- To the right -->
+            <div class="float-right d-none d-sm-inline ">
+                <a href="logout.php" type="button" class="btn btn-default">Logout</a>
             </div>
-            <strong>Copyright &copy; 2014-2019 <a href="http://adminlte.io">AdminLTE.io</a>.</strong> All rights
-            reserved.
+            <!-- Default to the left -->
+            <strong>Copyright &copy; 2022 <a href="#">WinMinAung </a>.</strong> All rights reserved.
         </footer>
 
         <!-- Control Sidebar -->

@@ -32,14 +32,15 @@ include('header.php');
           } else {
             $pageno = 1;
           }
-          $num_rec = 2;
+          $num_rec = 5;
           $offset = ($pageno - 1) * $num_rec;
           if (empty($_POST['search'])) {
             ##if search is exist
             $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
             $stmt->execute();
             $rawresult = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $total_pages = ceil(count($rawresult)) / $num_rec;
+            $total_posts = count($rawresult);
+            $total_pages = ceil(count($rawresult) / $num_rec);
 
             $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT $offset,$num_rec");
             $stmt->execute();
@@ -49,7 +50,7 @@ include('header.php');
             $stmt = $pdo->prepare("SELECT * FROM posts  WHERE title LIKE '%$userInput%' ORDER BY id DESC");
             $stmt->execute();
             $rawresult = $stmt->fetchAll(PDO::FETCH_ASSOC);
-            $total_pages = ceil(count($rawresult)) / $num_rec;
+            $total_pages = ceil(count($rawresult) / $num_rec);
 
             $stmt = $pdo->prepare("SELECT * FROM posts  WHERE title LIKE '%$userInput%' ORDER BY id DESC LIMIT $offset,$num_rec");
             $stmt->execute();
@@ -60,8 +61,12 @@ include('header.php');
           ?>
 
           <div class="card-body">
+            <div class="">
+              total posts <i> : <b> <?php echo $total_posts; ?></b></i>
+            </div>
             <div>
               <a href="add.php" type="button" class="btn btn-primary">New Blog Post</a>
+
             </div>
             <br>
             <table class="table table-bordered ">
@@ -77,7 +82,7 @@ include('header.php');
 
                 <?php
                 if ($result) {
-                  // $i = 1;
+                  //  $i=1;
                   foreach ($result as $value) {
                     $i = $value['id'];
                 ?>
@@ -107,9 +112,15 @@ include('header.php');
               <ul class="pagination float-right">
                 <li class="page-item"><a class="page-link" href="?pageno=1">First</a></li>
                 <li class="page-item <?php echo  $pageno <= 1 ? 'disabled' :  "" ?>"><a class="page-link" href="<?php echo $pageno <= 1 ? "#" : "?pageno=" . ($pageno - 1); ?>">Previous</a></li>
-                <li class="page-item"><a class="page-link" href="#"><?php echo $pageno; ?></a></li>
-                <li class="page-item <?php echo  $pageno >= $total_pages ? 'disabled' :  "" ?>"><a class="page-link" href="<?php echo $pageno >= $total_pages ? "#" : "?pageno=" . ($pageno + 1); ?>">Next</a></li>
-                <li class="page-item"><a class="page-link" href="?pageno=<?php echo $total_pages; ?>">Last</a></li>
+                <li class="page-item">
+                  <a class="page-link" href="#"><?php echo $pageno; ?></a>
+                </li>
+                <li class="page-item <?php echo  $pageno >= $total_pages ? 'disabled' :  "" ?>">
+                  <a class="page-link" href="<?php echo $pageno >= $total_pages ? "#" : "?pageno=" . ($pageno + 1); ?>">Next</a>
+                </li>
+                <li class="page-item">
+                  <a class="page-link" href="?pageno=<?php echo $total_pages; ?>">Last</a>
+                </li>
               </ul>
             </nav>
             <!-- pagination navigatin -->
