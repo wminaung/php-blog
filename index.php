@@ -47,10 +47,62 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
                 </div><!-- /.container-fluid -->
             </section>
 
+
             <?php
+
+            if (!empty($_GET['pageno'])) {
+                $pageno = $_GET['pageno'];
+            } else {
+                $pageno = 1;
+            }
+            $number_rec = 3;
+
             $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
             $stmt->execute();
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $total_posts = count($result);
+
+            $total_pages = ceil($total_posts / $number_rec);
+
+            $offset = ($pageno - 1) * $number_rec;
+
+
+
+
+            ?>
+            <!-- Pagination  -->
+            <nav aria-label="Page navigation example" class="d-flex justify-content-end">
+                <ul class="pagination">
+                    <li class="page-item <?php echo $pageno <= 1 ? 'disabled' : '' ?>">
+                        <a class="page-link " href="?pageno=1">First</a>
+                    </li>
+                    <li class="page-item <?php echo $pageno <= 1 ? 'disabled' : '' ?>">
+                        <a class="page-link" href="<?php echo $pageno <= 1 ? '#' : '?pageno=' . ($pageno - 1); ?>">Previous</a>
+                    </li>
+
+                    <li class="page-item">
+                        <a class="page-link" href="#">
+                            <?php echo $pageno >= 1 && $pageno <= $total_pages ? $pageno : '' ?>
+                        </a>
+                    </li>
+
+                    <li class="page-item <?php echo  $pageno >= $total_pages ? 'disabled' :  "" ?>">
+                        <a class="page-link" href="?pageno=<?php echo $pageno + 1 ?>">Next</a>
+                    </li>
+                    <li class="page-item <?php echo $pageno >= $total_pages ? 'disabled' : '' ?>">
+                        <a class="page-link" href="?pageno=<?php echo $total_pages ?>">Last</a>
+                    </li>
+                </ul>
+            </nav>
+            <!-- Pagination end -->
+
+            <?php
+            $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC LIMIT $offset,$number_rec");
+            $stmt->execute();
+            $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            // $stmt = $pdo->prepare("SELECT * FROM posts ORDER BY id DESC");
+            // $stmt->execute();
+            // $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
             ?>
 
             <!-- Main content -->
@@ -97,7 +149,7 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
                 <!-- /.row -->
             </section>
             <!-- /.content -->
-
+            <br><br><br>
             <a id="back-to-top" href="#" class="btn btn-primary back-to-top" role="button" aria-label="Scroll to top">
                 <i class="fas fa-chevron-up"></i>
             </a>

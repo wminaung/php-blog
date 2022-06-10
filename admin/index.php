@@ -50,6 +50,7 @@ include('header.php');
             $stmt = $pdo->prepare("SELECT * FROM posts  WHERE title LIKE '%$userInput%' ORDER BY id DESC");
             $stmt->execute();
             $rawresult = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $total_posts = count($rawresult);
             $total_pages = ceil(count($rawresult) / $num_rec);
 
             $stmt = $pdo->prepare("SELECT * FROM posts  WHERE title LIKE '%$userInput%' ORDER BY id DESC LIMIT $offset,$num_rec");
@@ -62,7 +63,7 @@ include('header.php');
 
           <div class="card-body">
             <div class="">
-              total posts <i> : <b> <?php echo $total_posts; ?></b></i>
+              total posts <i> : <b><?php echo $total_posts ?></b></i>
             </div>
             <div>
               <a href="add.php" type="button" class="btn btn-primary">New Blog Post</a>
