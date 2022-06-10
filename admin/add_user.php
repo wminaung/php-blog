@@ -3,12 +3,21 @@ session_start();
 require '../config/config.php';
 require "../pre.php";
 
-if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
+if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in']) && empty($_SESSION['role'])) {
     header("location: login.php");
+    exit();
 }
+if ($_SESSION['role'] != 1) {
+    header("Location: ../login.php");
+    exit();
+}
+
+
+
 if ($_POST) {
     $name = $_POST['name'];
     $email = $_POST['email'];
+    $password = $_POST['password'];
     if (!empty($_POST['role'])) {
         $role = 1;
     } else {
@@ -24,13 +33,13 @@ if ($_POST) {
         exit();
     } else {
 
-        $stmt = $pdo->prepare("INSERT INTO users(name,email,role)
-                                VALUES (:name, :email, :role)
+        $stmt = $pdo->prepare("INSERT INTO users(name,email,role,password)
+                                VALUES (:name, :email, :role,:password)
                                 ");
         $result = $stmt->execute(
             array(
                 ':name' => $name, ':email' => $email,
-                ':role' => $role
+                ':role' => $role, ':password' => $password
             )
         );
         if ($result) {
@@ -61,6 +70,14 @@ include('header.php');
                             <div class="form-group">
                                 <label for="">Email</label>
                                 <input type="email" name="email" id="" class="form-control" required>
+                            </div>
+                            <div class="input-group mb-3">
+                                <input type="password" class="form-control" placeholder="Password" name="password">
+                                <div class="input-group-append">
+                                    <div class="input-group-text">
+                                        <span class="fas fa-lock"></span>
+                                    </div>
+                                </div>
                             </div>
                             <div class="form-group">
                                 <label for="admin">Admin</label>

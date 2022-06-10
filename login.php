@@ -17,6 +17,7 @@ if ($_POST) {
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['logged_in'] = time();
             $_SESSION['user_name'] = $user['name'];
+            $_SESSION['role'] = $user['role'];
 
             header('location:index.php');
             exit();
@@ -66,7 +67,7 @@ if ($_POST) {
 
 
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email" name="email">
+                        <input type="email" class="form-control" placeholder="Email" name="email" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
@@ -74,7 +75,7 @@ if ($_POST) {
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password" name="password">
+                        <input type="password" class="form-control" placeholder="Password" name="password" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>

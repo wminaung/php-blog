@@ -10,29 +10,34 @@ if ($_POST) {
     $password = $_POST['password'];
 
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
-    $stmt->bindValue(':email', $email);
-    $stmt->execute();
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($name != '' and $email != '' and $password != '') {
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) {
-        echo "<script>alert('This email is already exist! try again');window.location.href='register.php';</script>";
-    } else {
+        if ($user) {
+            echo "<script>alert('This email is already exist! try again');window.location.href='register.php';</script>";
+        } else {
 
-        $stmt = $pdo->prepare("INSERT INTO users (name,password,email) VALUES (:name,:password,:email)");
+            $stmt = $pdo->prepare("INSERT INTO users (name,password,email) VALUES (:name,:password,:email)");
 
-        $result = $stmt->execute(
-            array(
-                ':name' => $name, ':password' => $password, ':email' => $email
-            )
-        );
+            $result = $stmt->execute(
+                array(
+                    ':name' => $name, ':password' => $password, ':email' => $email
+                )
+            );
 
 
-        if ($result) {
-            echo "<script>alert('Successfully Register! You can now login.');window.location.href='login.php';</script>";
-            exit();
+            if ($result) {
+                echo "<script>alert('Successfully Register! You can now login.');window.location.href='login.php';</script>";
+                exit();
+            }
+            echo "<script>alert('Incorrect credentials');window.location.href='register.php';</script>";
         }
-        echo "<script>alert('Incorrect credentials');window.location.href='register.php';</script>";
+    } else {
+        echo "<script>alert('Set all field for register');window.location.href='register.php';</script>";
+        exit();
     }
 }
 
@@ -76,7 +81,7 @@ if ($_POST) {
 
 
                     <div class="input-group mb-3">
-                        <input type="name" class="form-control" placeholder="Name" name="name">
+                        <input type="name" class="form-control" placeholder="Name" name="name" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
@@ -85,7 +90,7 @@ if ($_POST) {
                     </div>
 
                     <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email" name="email">
+                        <input type="email" class="form-control" placeholder="Email" name="email" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-envelope"></span>
@@ -93,7 +98,7 @@ if ($_POST) {
                         </div>
                     </div>
                     <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password" name="password">
+                        <input type="password" class="form-control" placeholder="Password" name="password" required>
                         <div class="input-group-append">
                             <div class="input-group-text">
                                 <span class="fas fa-lock"></span>

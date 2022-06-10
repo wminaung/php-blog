@@ -3,9 +3,14 @@ session_start();
 require '../config/config.php';
 require "../pre.php";
 
-if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
+if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in']) && empty($_SESSION['role'])) {
     header("location: login.php");
-};
+    exit();
+}
+if ($_SESSION['role'] != 1) {
+    header("Location: ../login.php");
+    exit();
+}
 
 if ($_POST) {
     $name =  $_POST['name'];
