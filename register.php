@@ -39,7 +39,7 @@ if ($_POST) {
 
                 $result = $stmt->execute(
                     array(
-                        ':name' => $name, ':password' => $password, ':email' => $email
+                        ':name' => $name, ':password' => password_hash($password, PASSWORD_DEFAULT), ':email' => $email
                     )
                 );
 
