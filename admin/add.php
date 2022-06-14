@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../config/config.php';
+require '../config/common.php';
 require "../pre.php";
 
 if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in']) && empty($_SESSION['role'])) {
@@ -14,6 +15,7 @@ if ($_SESSION['role'] != 1) {
 
 
 if ($_POST) {
+
 
     if (empty($_POST['title']) || empty($_POST['content']) || empty($_FILES['image'])) {
         if (empty($_POST['title'])) {
@@ -62,6 +64,7 @@ include('header.php');
                 <div class="card">
                     <div class="card-body">
                         <form action="add.php" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
                             <div class="form-group">
                                 <label for="">Title</label>
                                 <p class="text-danger"><?php echo empty($titleError) ? "" : $titleError ?></p>

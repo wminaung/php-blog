@@ -1,6 +1,7 @@
 <?php
 session_start();
 require '../config/config.php';
+require '../config/common.php';
 require "../pre.php";
 
 if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in']) && empty($_SESSION['role'])) {
@@ -79,6 +80,7 @@ include('header.php');
                 <div class="card">
                     <div class="card-body">
                         <form action="" method="post" enctype="multipart/form-data">
+                            <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
                             <div class="form-group">
                                 <label for="">Name</label>
                                 <p class="text-danger"><?php echo empty($nameError) ? "" : $nameError ?></p>

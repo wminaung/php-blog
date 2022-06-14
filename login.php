@@ -1,6 +1,7 @@
 <?php
 session_start();
 require "config/config.php";
+require 'config/common.php';
 require "pre.php";
 
 if ($_POST) {
@@ -64,7 +65,7 @@ if ($_POST) {
                 <h3 class="login-box-msg">Login Page</h3>
 
                 <form action="login.php" method="post">
-
+                    <input type="hidden" name="_token" value="<?php echo $_SESSION['_token'] ?>">
 
                     <div class="input-group mb-3">
                         <input type="email" class="form-control" placeholder="Email" name="email" required>
