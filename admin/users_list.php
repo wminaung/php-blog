@@ -101,9 +101,9 @@ include('header.php');
                                 ?>
                                         <tr>
                                             <td><?php echo "$i"; ?></td>
-                                            <td><?php echo $value['name']; ?></td>
+                                            <td><?php echo escape($value['name']); ?></td>
                                             <td>
-                                                <?php echo $value['email']; ?>
+                                                <?php echo escape($value['email']); ?>
                                             </td>
                                             <td>
                                                 <?php echo $value['role'] == 1 ? "admin" :  'user'; ?>

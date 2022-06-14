@@ -77,13 +77,13 @@ include('header.php');
                                 <label for="">Title</label>
                                 <p class="text-danger"><?php echo empty($titleError) ? "" : $titleError ?></p>
 
-                                <input type="text" name="title" class="form-control" value='<?php echo $result['title'] ?>' />
+                                <input type="text" name="title" class="form-control" value='<?php echo escape($result['title']) ?>' />
                             </div>
                             <div class="form-group">
                                 <label for="">Content</label>
                                 <p class="text-danger"><?php echo empty($contentError) ? "" : $contentError ?></p>
 
-                                <textarea name="content" id="" cols="30" rows="3" class="form-control"><?php echo $result['content']; ?></textarea>
+                                <textarea name="content" id="" cols="30" rows="3" class="form-control"><?php echo escape($result['content']); ?></textarea>
                             </div>
                             <div class="form-group">
                                 <label for="">Image</label><br>

@@ -82,7 +82,7 @@ if (!empty($_GET['id'])) {
             <!-- Content Header (Page header) -->
             <section class="content-header text-center">
                 <div class="container-fluid">
-                    <h1><?php echo $result['title'] ?></h1>
+                    <h1><?php echo escape($result['title']) ?></h1>
                 </div><!-- /.container-fluid -->
             </section>
 
@@ -97,7 +97,7 @@ if (!empty($_GET['id'])) {
                             <div class="card-body">
                                 <img class="img-fluid pad" src="admin/images/<?php echo $result['image'] ?>" alt="Photo">
                                 <br><br>
-                                <p><?php echo $result['content'] ?></p>
+                                <p><?php echo escape($result['content']) ?></p>
 
                             </div>
                             <!-- /.card-body -->
@@ -120,12 +120,12 @@ if (!empty($_GET['id'])) {
 
                                             <div class="comment-text" style="margin-left:0px;">
                                                 <span class="username">
-                                                    <?php echo empty($auResult['name']) ? "" : $auResult['name'] ?>
+                                                    <?php echo empty($auResult['name']) ? "" : escape($auResult['name']) ?>
                                                     <span class="text-muted float-right">
                                                         <?php echo $value['created_at']; ?>
                                                     </span>
                                                 </span><!-- /.username -->
-                                                <?php echo $value['content']; ?>
+                                                <?php echo escape($value['content']); ?>
                                             </div>
                                             <!-- /.comment-text -->
                                         </div>

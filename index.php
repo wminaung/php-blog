@@ -120,7 +120,7 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
                                 <div class="card card-widget">
                                     <div class="card-header">
                                         <div class="card-title text-center" style="float: none;">
-                                            <h4><?php echo $value["title"]; ?></h4>
+                                            <h4><?php echo escape($value["title"]); ?></h4>
                                         </div>
 
                                     </div>
@@ -130,7 +130,7 @@ if (empty($_SESSION['user_id']) && empty($_SESSION['logged_in'])) {
                                         <a href="blogdetail.php?id=<?php echo $value['id']  ?>">
                                             <img class="img-fluid pad blog-img" src='./admin/images/<?php echo $value['image']; ?>' alt="photo">
                                         </a>
-                                        <p><?php echo substr($value['content'], 0, 50) ?></p>
+                                        <p><?php echo escape(substr($value['content'], 0, 50)) ?></p>
 
                                     </div>
                                     <!-- /.card-body -->

@@ -84,13 +84,13 @@ include('header.php');
                             <div class="form-group">
                                 <label for="">Name</label>
                                 <p class="text-danger"><?php echo empty($nameError) ? "" : $nameError ?></p>
-                                <input type="text" name="name" class="form-control" value='<?php echo $result['name'] ?>' />
+                                <input type="text" name="name" class="form-control" value='<?php echo escape($result['name']) ?>' />
                                 <hr>
                             </div>
                             <div class="form-group">
                                 <label for="">Email</label>
                                 <p class="text-danger"><?php echo empty($emailError) ? "" : $emailError ?></p>
-                                <input type="email" name="email" class="form-control" value='<?php echo $result['email'] ?>' />
+                                <input type="email" name="email" class="form-control" value='<?php echo escape($result['email']) ?>' />
                                 <hr>
                             </div>
                             <div class="form-group">
