@@ -15,35 +15,54 @@ if ($_SESSION['role'] != 1) {
 
 
 if ($_POST) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
-    if (!empty($_POST['role'])) {
-        $role = 1;
-    } else {
-        $role = 0;
-    }
 
-    $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
-    $stmt->bindValue(':email', $email);
-    $stmt->execute();
-    $user = $stmt->fetch(PDO::FETCH_ASSOC);
-    if ($user) {
-        echo "<script>alert('Email Duplicated');</script>";
-        exit();
+    if (empty($_POST['name']) || empty($_POST['email']) || empty($_POST['password']) || strlen($_POST['password']) < 4) {
+        if (empty($_POST['name'])) {
+            $nameError = "*Name cannot be null";
+        }
+        if (empty($_POST['email'])) {
+            $emailError = "*Email cannot be null";
+        }
+        if (empty($_POST['password'])) {
+            $passwordError = "*Password cannot be null";
+        }
+        if (strlen($_POST['password']) < 4) {
+            $passwordError = "*Password shound 4 character atleast";
+        }
     } else {
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
 
-        $stmt = $pdo->prepare("INSERT INTO users(name,email,role,password)
-                                VALUES (:name, :email, :role,:password)
-                                ");
-        $result = $stmt->execute(
-            array(
-                ':name' => $name, ':email' => $email,
-                ':role' => $role, ':password' => $password
-            )
-        );
-        if ($result) {
-            echo "<script>alert('Successfully Added a User');window.location.href='users_list.php'</script>";
+
+
+        if (!empty($_POST['role'])) {
+            $role = 1;
+        } else {
+            $role = 0;
+        }
+
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
+        $stmt->bindValue(':email', $email);
+        $stmt->execute();
+        $user = $stmt->fetch(PDO::FETCH_ASSOC);
+        if ($user) {
+            echo "<script>alert('Email Duplicated');</script>";
+            exit();
+        } else {
+
+            $stmt = $pdo->prepare("INSERT INTO users(name,email,role,password)
+                                    VALUES (:name, :email, :role,:password)
+                                    ");
+            $result = $stmt->execute(
+                array(
+                    ':name' => $name, ':email' => $email,
+                    ':role' => $role, ':password' => $password
+                )
+            );
+            if ($result) {
+                echo "<script>alert('Successfully Added a User');window.location.href='users_list.php'</script>";
+            }
         }
     }
 }
@@ -65,19 +84,26 @@ include('header.php');
                         <form action="" method="post">
                             <div class="form-group">
                                 <label for="">Name</label>
-                                <input type="text" name="name" id="" class="form-control" required>
+                                <p class="text-danger"><?php echo empty($nameError) ? "" : $nameError ?></p>
+
+                                <input type="text" name="name" id="" class="form-control">
+                                <hr>
                             </div>
                             <div class="form-group">
                                 <label for="">Email</label>
-                                <input type="email" name="email" id="" class="form-control" required>
+                                <p class="text-danger"><?php echo empty($emailError) ? "" : $emailError ?></p>
+
+                                <input type="email" name="email" id="" class="form-control">
+                                <hr>
                             </div>
-                            <div class="input-group mb-3">
+                            <div class="form-group">
+
+                                <label for="">Password</label>
+                                <p class="text-danger"><?php echo empty($passwordError) ? "" : $passwordError ?></p>
+
                                 <input type="password" class="form-control" placeholder="Password" name="password">
-                                <div class="input-group-append">
-                                    <div class="input-group-text">
-                                        <span class="fas fa-lock"></span>
-                                    </div>
-                                </div>
+
+                                <hr>
                             </div>
                             <div class="form-group">
                                 <label for="admin">Admin</label>

@@ -61,6 +61,7 @@ include('header.php');
             $result = $stmt->fetchAll(PDO::FETCH_ASSOC);
           } else {
             $userInput = !empty($_POST['search']) ? $_POST['search'] : $_COOKIE['search'];
+            $userInput = htmlspecialchars($userInput);
             $stmt = $pdo->prepare("SELECT * FROM posts  WHERE title LIKE '%$userInput%' ORDER BY id DESC");
             $stmt->execute();
             $rawresult = $stmt->fetchAll(PDO::FETCH_ASSOC);

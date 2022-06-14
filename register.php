@@ -5,39 +5,55 @@ require "pre.php";
 
 
 if ($_POST) {
-    $name = $_POST['name'];
-    $email = $_POST['email'];
-    $password = $_POST['password'];
 
-
-    if ($name != '' and $email != '' and $password != '') {
-        $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
-        $stmt->bindValue(':email', $email);
-        $stmt->execute();
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user) {
-            echo "<script>alert('This email is already exist! try again');window.location.href='register.php';</script>";
-        } else {
-
-            $stmt = $pdo->prepare("INSERT INTO users (name,password,email) VALUES (:name,:password,:email)");
-
-            $result = $stmt->execute(
-                array(
-                    ':name' => $name, ':password' => $password, ':email' => $email
-                )
-            );
-
-
-            if ($result) {
-                echo "<script>alert('Successfully Register! You can now login.');window.location.href='login.php';</script>";
-                exit();
-            }
-            echo "<script>alert('Incorrect credentials');window.location.href='register.php';</script>";
+    if (empty($_POST['name']) || empty($_POST['email']) || empty($_POST['password']) || strlen($_POST['password']) < 4) {
+        if (empty($_POST['name'])) {
+            $nameError = "*Name cannot be null";
+        }
+        if (empty($_POST['email'])) {
+            $emailError = "*Email cannot be null";
+        }
+        if (empty($_POST['password'])) {
+            $passwordError = "*Password cannot be null";
+        }
+        if (strlen($_POST['password']) < 4) {
+            $passwordError = "*Password shound 4 character atleast";
         }
     } else {
-        echo "<script>alert('Set all field for register');window.location.href='register.php';</script>";
-        exit();
+        $name = $_POST['name'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];
+
+
+        if ($name != '' and $email != '' and $password != '') {
+            $stmt = $pdo->prepare("SELECT * FROM users WHERE email=:email");
+            $stmt->bindValue(':email', $email);
+            $stmt->execute();
+            $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            if ($user) {
+                echo "<script>alert('This email is already exist! try again');window.location.href='register.php';</script>";
+            } else {
+
+                $stmt = $pdo->prepare("INSERT INTO users (name,password,email) VALUES (:name,:password,:email)");
+
+                $result = $stmt->execute(
+                    array(
+                        ':name' => $name, ':password' => $password, ':email' => $email
+                    )
+                );
+
+
+                if ($result) {
+                    echo "<script>alert('Successfully Register! You can now login.');window.location.href='login.php';</script>";
+                    exit();
+                }
+                echo "<script>alert('Incorrect credentials');window.location.href='register.php';</script>";
+            }
+        } else {
+            echo "<script>alert('Set all field for register');window.location.href='register.php';</script>";
+            exit();
+        }
     }
 }
 
@@ -78,30 +94,40 @@ if ($_POST) {
                 <h3 class="login-box-msg">Register Page</h3>
 
                 <form action="register.php" method="post">
-
-
-                    <div class="input-group mb-3">
-                        <input type="name" class="form-control" placeholder="Name" name="name" required>
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                    <div>
+                        <p class="text-danger"><?php echo empty($nameError) ? "" : $nameError ?></p>
+                        <div class="input-group  mb-3">
+                            <input type="name" class="form-control" placeholder="Name" name="name">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-user"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="input-group mb-3">
-                        <input type="email" class="form-control" placeholder="Email" name="email" required>
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-envelope"></span>
+                    <div>
+                        <p class="text-danger"><?php echo empty($emailError) ? "" : $emailError ?></p>
+                        <div class="input-group mb-3">
+
+                            <input type="email" class="form-control" placeholder="Email" name="email">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-envelope"></span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                    <div class="input-group mb-3">
-                        <input type="password" class="form-control" placeholder="Password" name="password" required>
-                        <div class="input-group-append">
-                            <div class="input-group-text">
-                                <span class="fas fa-lock"></span>
+                    <div>
+                        <p class="text-danger"><?php echo empty($passwordError) ? "" : $passwordError ?></p>
+
+                        <div class="input-group mb-3">
+
+                            <input type="password" class="form-control" placeholder="Password" name="password">
+                            <div class="input-group-append">
+                                <div class="input-group-text">
+                                    <span class="fas fa-lock"></span>
+                                </div>
                             </div>
                         </div>
                     </div>

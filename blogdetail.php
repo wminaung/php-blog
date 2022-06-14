@@ -31,20 +31,25 @@ if (!empty($_GET['id'])) {
 
 
     if (!empty($_POST)) {
-        $comment = $_POST['comment'];
 
+        if (empty($_POST['comment'])) {
+            if (empty($_POST['comment'])) {
+                $commentError = "*Comment cannot be null";
+            }
+        } else {
+            $comment = $_POST['comment'];
 
+            $stmt = $pdo->prepare("INSERT INTO comments (content,author_id,post_id) VALUES (:content,:author_id,:post_id)");
 
-        $stmt = $pdo->prepare("INSERT INTO comments (content,author_id,post_id) VALUES (:content,:author_id,:post_id)");
+            $result = $stmt->execute(
+                array(
+                    ':content' => $comment, ':author_id' => $_SESSION['user_id'], ':post_id' => $blogId
+                )
+            );
 
-        $result = $stmt->execute(
-            array(
-                ':content' => $comment, ':author_id' => $_SESSION['user_id'], ':post_id' => $blogId
-            )
-        );
-
-        if ($result) {
-            header('Location: blogdetail.php?id=' . $blogId);
+            if ($result) {
+                header('Location: blogdetail.php?id=' . $blogId);
+            }
         }
     }
 }
@@ -114,7 +119,7 @@ if (!empty($_GET['id'])) {
 
                                             <div class="comment-text" style="margin-left:0px;">
                                                 <span class="username">
-                                                    <?php echo $auResult['name']; ?>
+                                                    <?php echo empty($auResult['name']) ? "" : $auResult['name'] ?>
                                                     <span class="text-muted float-right">
                                                         <?php echo $value['created_at']; ?>
                                                     </span>
@@ -135,6 +140,8 @@ if (!empty($_GET['id'])) {
 
                                     <!-- .img-push is used to add margin to elements next to floating images -->
                                     <div class="img-push">
+                                        <p class="text-danger"><?php echo empty($commentError) ? "" : $commentError ?></p>
+
                                         <input type="text" name="comment" class="form-control form-control-sm" placeholder="Press enter to post comment">
                                     </div>
                                 </form>

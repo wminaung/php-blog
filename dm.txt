@@ -1,0 +1,8 @@
+document.querySelector('body').style.background = 'black';
+document.querySelector(".clever-main-menu").style.display = 'none';
+document.getElementById("accordion").style.display = 'none'
+document.querySelector(".course-sidebar").style.display = 'none'
+document.querySelector('body').style.marginTop = "-125px";
+
+###
+zoom -> 200%
